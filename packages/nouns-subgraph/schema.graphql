@@ -1,3 +1,43 @@
+type DelegationEvent @entity {
+  "The txn hash of this event + nounId"
+  id: ID!
+
+  "The Noun being delegated"
+  noun: Noun!
+
+  "Previous delegate address"
+  previousDelegate: Delegate!
+
+  "New delegate address"
+  newDelegate: Delegate!
+
+  "Block number of the event"
+  blockNumber: BigInt!
+
+  "The timestamp of the block the event is in"
+  blockTimestamp: BigInt!
+}
+
+type TransferEvent @entity {
+  "The txn hash of this event"
+  id: ID!
+
+  "The Noun being transfered"
+  noun: Noun!
+
+  "Previous holder address"
+  previousHolder: Account!
+
+  "New holder address"
+  newHolder: Account!
+
+  "Block number of the event"
+  blockNumber: BigInt!
+
+  "The timestamp of the block the event is in"
+  blockTimestamp: BigInt!
+}
+
 type Seed @entity {
   "The Noun's ERC721 token id"
   id: ID!
@@ -201,6 +241,18 @@ type Proposal @entity {
 
   "Votes associated to this proposal"
   votes: [Vote!]! @derivedFrom(field: "proposal")
+
+  "Total supply when this proposal was created"
+  totalSupply: BigInt!
+
+  "Dynamic quorum param snapshot: min quorum basis points"
+  minQuorumVotesBPS: Int!
+
+  "Dynamic quorum param snapshot: max quorum basis points"
+  maxQuorumVotesBPS: Int!
+
+  "Dynamic quorum param snapshot: the dynamic quorum coefficient"
+  quorumCoefficient: BigInt!
 }
 
 type Vote @entity {
@@ -230,6 +282,9 @@ type Vote @entity {
 
   "Proposal that is being voted on"
   proposal: Proposal!
+
+  "Block number of vote"
+  blockNumber: BigInt!
 }
 
 type Governance @entity {
@@ -259,4 +314,21 @@ type Governance @entity {
 
   "Number of proposals currently queued for execution"
   proposalsQueued: BigInt!
+}
+
+type DynamicQuorumParams @entity {
+  "Unique entity used to store the latest dymanic quorum params"
+  id: ID!
+
+  "Min quorum basis points"
+  minQuorumVotesBPS: Int!
+
+  "Max quorum basis points"
+  maxQuorumVotesBPS: Int!
+
+  "The dynamic quorum coefficient"
+  quorumCoefficient: BigInt!
+
+  "The block from which proposals are using DQ, based on when we first see configuration being set"
+  dynamicQuorumStartBlock: BigInt
 }
